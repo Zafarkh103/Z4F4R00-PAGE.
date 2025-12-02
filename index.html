@@ -1,212 +1,1326 @@
-
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ZAFAR_BROHI Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnimeChat Pro - ZAFAR Rooms</title>
+  
   <style>
-    * { box-sizing: border-box; }
+    /* WhatsApp UI Base */
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: radial-gradient(circle at center, #0a0a0a, #1a1a1a 60%, #000);
+      background: #000;
       color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       min-height: 100vh;
-      flex-direction: column;
+      overflow-x: hidden;
     }
-    .card, .profile-card {
-      background: linear-gradient(145deg, #111, #1e1e1e);
-      border: 1px solid #ff0000aa;
-      border-radius: 20px;
-      padding: 30px;
+    
+    /* ANIME BACKGROUND */
+    .anime-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 0 40px #ff000088, 0 0 80px #ff000044, inset 0 0 30px #330000aa;
-      position: relative;
-      margin: 20px;
+      height: 100%;
+      z-index: -2;
+      background-image: url('background.png');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.5;
+      filter: brightness(0.8) contrast(1.3) saturate(1.5);
+      transition: background-image 1s ease;
     }
-    h1 { color: #ff4444; text-shadow: 0 0 10px #ff2222aa; margin-bottom: 20px; }
-    input {
+    
+    /* RED ANIME LIGHTING EFFECT */
+    .red-light {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
+      height: 100%;
+      background: radial-gradient(circle at 20% 50%, rgba(255, 45, 45, 0.4) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(255, 20, 20, 0.3) 0%, transparent 50%);
+      z-index: -1;
+      mix-blend-mode: screen;
+    }
+    
+    /* WhatsApp Header */
+    .chat-header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(15px);
+      padding: 12px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 45, 45, 0.3);
+      z-index: 100;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .logo {
+      width: 40px;
+      height: 40px;
       border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid #ff2d2d;
+      background: linear-gradient(135deg, #ff2d2d, #b30000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px rgba(255, 45, 45, 0.6);
+    }
+    
+    .header-text h2 {
+      margin: 0;
+      font-size: 18px;
+      color: #ff2d2d;
+      text-shadow: 0 0 10px rgba(255, 45, 45, 0.5);
+    }
+    
+    .header-text small {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+    
+    /* Online Users Indicator */
+    .online-users {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: #25d366;
+    }
+    
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      background: #25d366;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #25d366;
+    }
+    
+    /* Chat Container */
+    .chat-container {
+      padding-top: 70px;
+      padding-bottom: 120px;
+      min-height: 100vh;
+    }
+    
+    .messages {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    /* Message Bubbles */
+    .message {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      position: relative;
+      word-wrap: break-word;
+      backdrop-filter: blur(5px);
+      transition: transform 0.2s;
+    }
+    
+    .message:hover {
+      transform: translateY(-2px);
+    }
+    
+    .sent {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #0084ff, #0066cc);
+      color: white;
+      border-bottom-right-radius: 5px;
+      box-shadow: 0 5px 20px rgba(0, 132, 255, 0.4);
+    }
+    
+    .received {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom-left-radius: 5px;
+    }
+    
+    .sender-name {
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      opacity: 0.9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .message-time {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-left: 10px;
+    }
+    
+    /* Message Actions */
+    .message-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      justify-content: flex-end;
+    }
+    
+    .message-action-btn {
+      background: none;
       border: none;
-      outline: none;
-      background-color: #222;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    
+    .message-action-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
       color: white;
     }
-    button {
+    
+    /* Message Status Icons */
+    .status-icons {
+      display: flex;
+      gap: 2px;
+      margin-left: 5px;
+    }
+    
+    .status-icon {
+      font-size: 10px;
+      opacity: 0.6;
+    }
+    
+    .status-icon.delivered {
+      color: #25d366;
+    }
+    
+    .status-icon.read {
+      color: #53d769;
+    }
+    
+    /* Input Area */
+    .input-area {
+      position: fixed;
+      bottom: 50px;
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(15px);
+      border-top: 1px solid rgba(255, 45, 45, 0.2);
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+    
+    #messageInput {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 24px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 14px;
+      outline: none;
+      border: 1px solid rgba(255, 45, 45, 0.3);
+    }
+    
+    #messageInput::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    #sendButton {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #ff2d2d, #b30000);
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 5px 15px rgba(255, 45, 45, 0.5);
+      transition: transform 0.2s;
+    }
+    
+    #sendButton:hover {
+      transform: scale(1.1);
+    }
+    
+    /* Emoji Picker */
+    .emoji-picker {
+      position: absolute;
+      bottom: 70px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.95);
+      border: 1px solid rgba(255, 45, 45, 0.3);
+      border-radius: 10px;
+      padding: 10px;
+      display: none;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      max-width: 200px;
+      z-index: 1000;
+    }
+    
+    .emoji-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 5px;
+      transition: background 0.2s;
+    }
+    
+    .emoji-btn:hover {
+      background: rgba(255, 45, 45, 0.2);
+    }
+    
+    /* Bottom Navigation */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(15px);
+      display: flex;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255, 45, 45, 0.2);
+      z-index: 100;
+    }
+    
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    
+    .nav-item.active {
+      color: #ff2d2d;
+      text-shadow: 0 0 10px rgba(255, 45, 45, 0.5);
+    }
+    
+    .nav-icon {
+      font-size: 20px;
+      margin-bottom: 3px;
+    }
+    
+    /* Chatrooms Sidebar */
+    .sidebar {
+      position: fixed;
+      left: -300px;
+      top: 0;
+      width: 280px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.98);
+      backdrop-filter: blur(25px);
+      z-index: 1000;
+      transition: 0.3s;
+      padding: 20px;
+      overflow-y: auto;
+      border-right: 2px solid rgba(255, 45, 45, 0.3);
+    }
+    
+    .sidebar.show {
+      left: 0;
+    }
+    
+    .chatroom {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      border: 1px solid transparent;
+    }
+    
+    .chatroom:hover {
+      background: rgba(255, 45, 45, 0.15);
+      border-color: rgba(255, 45, 45, 0.5);
+      transform: translateX(5px);
+    }
+    
+    .chatroom.active {
+      background: rgba(255, 45, 45, 0.2);
+      border-color: rgba(255, 45, 45, 0.7);
+      box-shadow: 0 5px 15px rgba(255, 45, 45, 0.2);
+    }
+    
+    .room-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 45, 45, 0.5);
+      background: linear-gradient(135deg, #ff2d2d, #b30000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .room-info h4 {
+      margin: 0;
+      font-size: 14px;
+      color: #fff;
+    }
+    
+    .room-info small {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+    
+    /* Password Hidden */
+    .password-hidden {
+      color: #ff2d2d;
+      background: rgba(255, 45, 45, 0.1);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      border: 1px dashed rgba(255, 45, 45, 0.3);
+    }
+    
+    /* Online Users Sidebar */
+    .online-sidebar {
+      position: fixed;
+      right: -300px;
+      top: 0;
+      width: 250px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.98);
+      backdrop-filter: blur(25px);
+      z-index: 1000;
+      transition: 0.3s;
+      padding: 20px;
+      overflow-y: auto;
+      border-left: 2px solid rgba(0, 132, 255, 0.3);
+    }
+    
+    .online-sidebar.show {
+      right: 0;
+    }
+    
+    .online-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      border-left: 3px solid #25d366;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0084ff, #0066cc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    
+    .modal-content {
+      background: rgba(20, 8, 12, 0.98);
+      padding: 25px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 350px;
+      border: 2px solid rgba(255, 45, 45, 0.5);
+      box-shadow: 0 0 40px rgba(255, 45, 45, 0.3);
+      text-align: center;
+    }
+    
+    .modal h2 {
+      color: #ff2d2d;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px rgba(255, 45, 45, 0.5);
+    }
+    
+    .modal input {
       width: 100%;
       padding: 12px;
-      margin-top: 10px;
-      background: #ff0000;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 45, 45, 0.3);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    .modal button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #ff2d2d, #b30000);
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 5px 15px rgba(255, 45, 45, 0.4);
     }
-    .error {
-      color: #ff5555;
-      font-size: 14px;
-      margin-top: 8px;
+    
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: rgba(255, 255, 255, 0.6);
     }
-    .logo {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: 4px solid #ff0000;
-      object-fit: cover;
-      box-shadow: 0 0 20px #ff000088, 0 0 40px #ff0000aa;
-      margin-bottom: 20px;
+    
+    /* Secret Panel */
+    .secret-container {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 3000;
+      background: rgba(0, 0, 0, 0.95);
+      padding: 15px;
+      border-radius: 10px;
+      border: 2px solid #ff2d2d;
+      display: none;
+      box-shadow: 0 0 30px rgba(255, 45, 45, 0.3);
+      max-width: 250px;
     }
-    .tagline {
-      font-size: 14px;
-      color: #ff0055;
-      margin-bottom: 20px;
-      text-shadow: 0 0 8px #ff005544;
-    }
-    .section {
-      background: rgba(255, 255, 255, 0.03);
-      padding: 14px;
-      border-left: 4px solid #ff0000;
-      margin-top: 16px;
-      border-radius: 12px;
-      text-align: left;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-    }
-    .section h3 {
-      color: #ff2222;
-      margin-bottom: 8px;
-      font-size: 16px;
-    }
-    .section p, .section a {
-      font-size: 13px;
-      color: #ddd;
-      word-break: break-word;
-    }
-    .section a {
-      color: #25D366;
-      text-decoration: none;
-    }
-    .eye-icon {
-      position: absolute;
-      right: 35px;
-      top: 203px;
-      color: #aaa;
-      cursor: pointer;
+    
+    /* Message Delete Confirmation */
+    .delete-confirm {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.95);
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #ff2d2d;
+      z-index: 3000;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <!-- HTML content truncated for brevity. Full version will be completed in another step. -->
-</body>
-</html>
-
-  <div class="card" id="loginCard">
-    <h1>Login</h1>
-    <input type="email" id="email" placeholder="Enter Email">
-    <input type="password" id="password" placeholder="Enter Password">
-    <span class="eye-icon" onclick="togglePassword()">👁️</span>
-    <button onclick="validate()">Login</button>
-    <button onclick="forgotPassword()">Forgot Password?</button>
-    <div class="error" id="errorMsg"></div>
-    <div class="loading-spinner" id="loadingSpinner">Loading...</div>
+  <!-- Anime Background -->
+  <div class="anime-bg" id="animeBg"></div>
+  <div class="red-light"></div>
+  
+  <!-- Secret Admin Panel (Hidden) -->
+  <div class="secret-container" id="secretContainer">
+    <h4 style="margin:0 0 10px 0;color:#ff2d2d;text-align:center;">🔒 Secret Passwords</h4>
+    <div style="font-size:12px;line-height:1.6;">
+      <div><strong>Room 1:</strong> <span id="secretPass1" style="color:#25d366;">ZA****</span></div>
+      <div><strong>Room 2:</strong> <span id="secretPass2" style="color:#25d366;">ZA****</span></div>
+      <div><strong>Room 3:</strong> <span id="secretPass3" style="color:#25d366;">ZA****</span></div>
+      <div><strong>Room 4:</strong> <span id="secretPass4" style="color:#25d366;">ZA****</span></div>
+      <div><strong>Room 5:</strong> <span id="secretPass5" style="color:#25d366;">ZA****</span></div>
+    </div>
+    <button onclick="hideSecretPanel()" style="margin-top:10px;background:#ff2d2d;color:white;border:none;padding:5px 10px;border-radius:5px;font-size:10px;cursor:pointer;width:100%;">Close</button>
   </div>
-
-  <div class="profile-card" id="mainProfile" style="display:none;">
-    <img src="logo.png" alt="Logo" class="logo">
-    <h1>ZeRoX_ShadoW</h1>
-    <div class="tagline">⚡ Master of Code | Shadow of the Net ⚡</div>
-    <div class="section">
-      <h3>👁‍🗨 About</h3>
-      <p>Ek naam — ek saaya. Mein chupke se code karta hoon aur andhere mein deploy karta hoon. 🕶️</p>
+  
+  <!-- WhatsApp Header -->
+  <div class="chat-header">
+    <div class="header-left">
+      <button id="menuBtn" style="background:none;border:none;color:#ff2d2d;font-size:22px;cursor:pointer;">☰</button>
+      <div class="logo">🎌</div>
+      <div class="header-text">
+        <h2>AnimeChat Pro</h2>
+        <small id="onlineCount">0 online</small>
+      </div>
     </div>
-    <div class="section">
-      <h3>🧪 Skills</h3>
-      <p>HTML, CSS, JS, PHP, Python, Telegram Bots, Exploit UI, Web Shadows</p>
+    <div id="roomNameDisplay" style="color:#ff2d2d;font-weight:bold;font-size:14px;">General Chat</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button onclick="toggleOnlineSidebar()" style="background:none;border:none;color:#25d366;font-size:18px;cursor:pointer;" title="Online Users">👥</button>
+      <button onclick="toggleSecretPanel()" style="background:none;border:none;color:#ff2d2d;font-size:18px;cursor:pointer;" title="Admin Panel">👁️</button>
     </div>
-    <div class="section">
-      <h3>🕸️ Contact</h3>
-      <p>
-        Telegram: @HACKER_X<br>
-        GitHub: /shadow-tech-x<br>
-       MY  WhatsApp Number 👉:
-        <a href="https://wa.me/923283898828?text=Assalamualaikum%20Zafi%20Bhi%20👋" target="_blank">Click to chat</a>
+  </div>
+  
+  <!-- Chat Container -->
+  <div class="chat-container">
+    <div class="messages" id="messages">
+      <div class="loading" id="loading">Loading messages...</div>
+    </div>
+  </div>
+  
+  <!-- Input Area -->
+  <div class="input-area">
+    <button onclick="toggleEmojiPicker()" style="background:none;border:none;color:#ff2d2d;font-size:20px;cursor:pointer;">😀</button>
+    <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+    <button id="sendButton">➤</button>
+  </div>
+  
+  <!-- Emoji Picker -->
+  <div class="emoji-picker" id="emojiPicker">
+    <button class="emoji-btn" onclick="insertEmoji('😀')">😀</button>
+    <button class="emoji-btn" onclick="insertEmoji('😂')">😂</button>
+    <button class="emoji-btn" onclick="insertEmoji('😍')">😍</button>
+    <button class="emoji-btn" onclick="insertEmoji('🥰')">🥰</button>
+    <button class="emoji-btn" onclick="insertEmoji('😎')">😎</button>
+    <button class="emoji-btn" onclick="insertEmoji('🤩')">🤩</button>
+    <button class="emoji-btn" onclick="insertEmoji('😊')">😊</button>
+    <button class="emoji-btn" onclick="insertEmoji('🙏')">🙏</button>
+    <button class="emoji-btn" onclick="insertEmoji('🎉')">🎉</button>
+    <button class="emoji-btn" onclick="insertEmoji('🎌')">🎌</button>
+    <button class="emoji-btn" onclick="insertEmoji('🔥')">🔥</button>
+    <button class="emoji-btn" onclick="insertEmoji('💀')">💀</button>
+  </div>
+  
+  <!-- Bottom Navigation -->
+  <div class="nav-bar">
+    <div class="nav-item active" id="navChat">
+      <div class="nav-icon">💬</div>
+      <div>Chat</div>
+    </div>
+    <div class="nav-item" id="navRooms">
+      <div class="nav-icon">🔒</div>
+      <div>Rooms</div>
+    </div>
+    <div class="nav-item" id="navTheme">
+      <div class="nav-icon">🎨</div>
+      <div>Theme</div>
+    </div>
+    <div class="nav-item" id="navOnline">
+      <div class="nav-icon">👥</div>
+      <div><span id="onlineBadge">0</span> Online</div>
+    </div>
+  </div>
+  
+  <!-- Chatrooms Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <h3 style="margin-top:0;color:#ff2d2d;text-align:center;">🔒 Secret Rooms</h3>
+    
+    <!-- Room 0: General (No Password) -->
+    <div class="chatroom active" data-room="general" data-password="" data-bg="background.png">
+      <div class="room-avatar">#0</div>
+      <div class="room-info">
+        <h4>General Chat <span style="color:#25d366;">🔓</span></h4>
+        <small>Public • Everyone welcome</small>
+      </div>
+    </div>
+    
+    <!-- Secret Rooms -->
+    <div class="chatroom" data-room="Chatroom1" data-password="ZAFAR1" data-bg="bg1.png">
+      <div class="room-avatar">#1</div>
+      <div class="room-info">
+        <h4>Secret Room 1 <span style="color:#ff2d2d;">🔒</span></h4>
+        <small><span class="password-hidden">Password Protected</span></small>
+      </div>
+    </div>
+    
+    <div class="chatroom" data-room="Chatroom2" data-password="ZAFAR2" data-bg="bg2.png">
+      <div class="room-avatar">#2</div>
+      <div class="room-info">
+        <h4>Secret Room 2 <span style="color:#ff2d2d;">🔒</span></h4>
+        <small><span class="password-hidden">Password Protected</span></small>
+      </div>
+    </div>
+    
+    <div class="chatroom" data-room="Chatroom3" data-password="ZAFAR3" data-bg="bg3.png">
+      <div class="room-avatar">#3</div>
+      <div class="room-info">
+        <h4>Secret Room 3 <span style="color:#ff2d2d;">🔒</span></h4>
+        <small><span class="password-hidden">Password Protected</span></small>
+      </div>
+    </div>
+    
+    <div class="chatroom" data-room="Chatroom4" data-password="ZAFAR4" data-bg="bg4.png">
+      <div class="room-avatar">#4</div>
+      <div class="room-info">
+        <h4>Secret Room 4 <span style="color:#ff2d2d;">🔒</span></h4>
+        <small><span class="password-hidden">Password Protected</span></small>
+      </div>
+    </div>
+    
+    <div class="chatroom" data-room="Chatroom5" data-password="ZAFAR5" data-bg="bg5.png">
+      <div class="room-avatar">#5</div>
+      <div class="room-info">
+        <h4>Secret Room 5 <span style="color:#ff2d2d;">🔒</span></h4>
+        <small><span class="password-hidden">Password Protected</span></small>
+      </div>
+    </div>
+    
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,45,45,0.3);">
+      <div style="font-size:12px;opacity:0.7;text-align:center;">
+        🔥 Real-time chat with Firebase<br>
+        🔒 Password protected rooms<br>
+        🎌 Contact admin for passwords
+      </div>
+    </div>
+  </div>
+  
+  <!-- Online Users Sidebar -->
+  <div class="online-sidebar" id="onlineSidebar">
+    <h3 style="margin-top:0;color:#25d366;text-align:center;">👥 Online Users</h3>
+    <div id="onlineUsersList">
+      <div class="loading">Loading users...</div>
+    </div>
+  </div>
+  
+  <!-- Name Modal -->
+  <div class="modal" id="nameModal">
+    <div class="modal-content">
+      <h2>🎌 Welcome to AnimeChat</h2>
+      <p>Enter your name to start chatting:</p>
+      <input type="text" id="nameInput" placeholder="Enter your name..." autocomplete="off">
+      <button id="submitName">Start Chatting</button>
+      <p style="font-size:12px;margin-top:15px;opacity:0.7;">
+        🔥 Real-time Firebase chat<br>
+        🔒 5 password protected rooms
       </p>
     </div>
-    <button onclick="logout()">Logout</button>
+  </div>
+  
+  <!-- Password Modal -->
+  <div class="modal" id="passwordModal">
+    <div class="modal-content">
+      <h2>🔒 Password Required</h2>
+      <p id="roomPrompt">Enter password for this room:</p>
+      <input type="password" id="passwordInput" placeholder="Enter password..." autocomplete="off">
+      <button id="submitPassword">Join Room</button>
+    </div>
+  </div>
+  
+  <!-- Delete Confirmation Modal -->
+  <div class="delete-confirm" id="deleteConfirm">
+    <div style="color:white;text-align:center;">
+      <h4 style="color:#ff2d2d;margin:0 0 10px 0;">Delete Message?</h4>
+      <p style="font-size:14px;">Are you sure you want to delete this message?</p>
+      <div style="display:flex;gap:10px;margin-top:15px;">
+        <button onclick="cancelDelete()" style="flex:1;padding:8px;background:rgba(255,255,255,0.1);color:white;border:none;border-radius:5px;cursor:pointer;">Cancel</button>
+        <button onclick="confirmDelete()" style="flex:1;padding:8px;background:#ff2d2d;color:white;border:none;border-radius:5px;cursor:pointer;">Delete</button>
+      </div>
+    </div>
   </div>
 
-  <script>
-    const maxAttempts = 3;
-    let attempts = 0;
+<!-- Firebase Scripts -->
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>                                                             
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
 
-    function togglePassword() {
-      const passwordField = document.getElementById('password');
-      passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+<script>
+  // ========== FIREBASE CONFIG ==========
+  const firebaseConfig = {
+    apiKey: "AIzaSyB8zMhCjGxmHBpruABYA4pBj3jU0uMHCs0",
+    authDomain: "zafi-chat-app.firebaseapp.com",
+    projectId: "zafi-chat-app",
+    storageBucket: "zafi-chat-app.firebasestorage.app",
+    messagingSenderId: "989950346714",
+    appId: "1:989950346714:web:7bad7f8fae2a72ce0bace3",
+    measurementId: "G-XW5MS2D2K7",
+    databaseURL: "https://zafi-chat-app-default-rtdb.asia-southeast1.firebasedatabase.app"
+  };
+  
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+  const auth = firebase.auth();
+  const storage = firebase.storage();
+  
+  // ========== SECRET PASSWORDS ==========
+  const SECRET_PASSWORDS = {
+    "Chatroom1": "ZAFAR1",
+    "Chatroom2": "ZAFAR2", 
+    "Chatroom3": "ZAFAR3",
+    "Chatroom4": "ZAFAR4",
+    "Chatroom5": "ZAFAR5"
+  };
+  
+  // ========== APP STATE ==========
+  let userName = localStorage.getItem('animechat_username') || '';
+  let userId = '';
+  let currentRoom = 'general';
+  let isSidebarOpen = false;
+  let isOnlineSidebarOpen = false;
+  let secretPanelVisible = false;
+  let messageToDelete = null;
+  let typingTimer = null;
+  
+  // ========== DOM ELEMENTS ==========
+  const nameModal = document.getElementById('nameModal');
+  const passwordModal = document.getElementById('passwordModal');
+  const nameInput = document.getElementById('nameInput');
+  const passwordInput = document.getElementById('passwordInput');
+  const submitName = document.getElementById('submitName');
+  const submitPassword = document.getElementById('submitPassword');
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const onlineSidebar = document.getElementById('onlineSidebar');
+  const messagesDiv = document.getElementById('messages');
+  const messageInput = document.getElementById('messageInput');
+  const sendButton = document.getElementById('sendButton');
+  const animeBg = document.getElementById('animeBg');
+  const roomNameDisplay = document.getElementById('roomNameDisplay');
+  const onlineBadge = document.getElementById('onlineBadge');
+  const onlineCount = document.getElementById('onlineCount');
+  const onlineUsersList = document.getElementById('onlineUsersList');
+  const chatrooms = document.querySelectorAll('.chatroom');
+  const roomPrompt = document.getElementById('roomPrompt');
+  const secretContainer = document.getElementById('secretContainer');
+  const emojiPicker = document.getElementById('emojiPicker');
+  const deleteConfirm = document.getElementById('deleteConfirm');
+  const navRooms = document.getElementById('navRooms');
+  const navTheme = document.getElementById('navTheme');
+  const loadingDiv = document.getElementById('loading');
+  
+  // ========== SECRET FUNCTIONS ==========
+  function toggleSecretPanel() {
+    secretPanelVisible = !secretPanelVisible;
+    secretContainer.style.display = secretPanelVisible ? 'block' : 'none';
+  }
+  
+  function hideSecretPanel() {
+    secretPanelVisible = false;
+    secretContainer.style.display = 'none';
+  }
+  
+  // ========== EMOJI FUNCTIONS ==========
+  function toggleEmojiPicker() {
+    emojiPicker.style.display = emojiPicker.style.display === 'grid' ? 'none' : 'grid';
+  }
+  
+  function insertEmoji(emoji) {
+    messageInput.value += emoji;
+    messageInput.focus();
+    emojiPicker.style.display = 'none';
+  }
+  
+  // Close emoji picker when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.emoji-btn') && !e.target.closest('#messageInput') && e.target.id !== 'sendButton') {
+      emojiPicker.style.display = 'none';
     }
-
-    function forgotPassword() {
-      alert("Reset link bhijwana possible nahi. Yeh demo hai 🔒");
+  });
+  
+  // ========== MESSAGE FUNCTIONS ==========
+  function showMessageActions(messageId) {
+    const messageElement = document.getElementById(`msg-${messageId}`);
+    if (messageElement) {
+      const actions = messageElement.querySelector('.message-actions');
+      if (actions) {
+        actions.style.display = 'flex';
+      }
     }
-
-    function validate() {
-      const email = document.getElementById('email').value.trim();
-      const pass = document.getElementById('password').value.trim();
-      const error = document.getElementById('errorMsg');
-      const spinner = document.getElementById('loadingSpinner');
-
-      if (!email || !email.includes('@')) {
-        error.textContent = "❌ Sahi email daalo.";
-        return;
+  }
+  
+  function hideMessageActions(messageId) {
+    const messageElement = document.getElementById(`msg-${messageId}`);
+    if (messageElement) {
+      const actions = messageElement.querySelector('.message-actions');
+      if (actions) {
+        actions.style.display = 'none';
       }
-      if (pass.length < 4) {
-        error.textContent = "❌ Password kam az kam 4 letters ka ho.";
-        return;
-      }
-
-      spinner.style.display = 'block';
-      setTimeout(() => {
-        if(email === "ZAFI00@gmail.com" && pass === "ZAFI00") {
-          localStorage.setItem("loggedIn", "true");
-          showProfile();
-        } else {
-          attempts++;
-          error.textContent = "❌ Wrong email or password!";
-          if (attempts >= maxAttempts) {
-            error.textContent = "⛔ 3 bar wrong. Try again baad mein.";
-            document.querySelector("button[onclick='validate()']").disabled = true;
-          }
+    }
+  }
+  
+  function deleteMessage(messageId) {
+    messageToDelete = messageId;
+    deleteConfirm.style.display = 'block';
+  }
+  
+  function confirmDelete() {
+    if (messageToDelete) {
+      database.ref('rooms/' + currentRoom + '/messages/' + messageToDelete).remove()
+        .then(() => {
+          console.log('Message deleted');
+          deleteConfirm.style.display = 'none';
+          messageToDelete = null;
+        })
+        .catch(error => {
+          console.error('Delete error:', error);
+          alert('Failed to delete message');
+        });
+    }
+  }
+  
+  function cancelDelete() {
+    deleteConfirm.style.display = 'none';
+    messageToDelete = null;
+  }
+  
+  function forwardMessage(messageId) {
+    const messageRef = database.ref('rooms/' + currentRoom + '/messages/' + messageId);
+    messageRef.once('value')
+      .then(snapshot => {
+        const message = snapshot.val();
+        if (message) {
+          const forwardText = `Forwarded: ${message.text}`;
+          messageInput.value = forwardText;
+          messageInput.focus();
         }
-        spinner.style.display = 'none';
-      }, 1000);
+      });
+  }
+  
+  // ========== ROOM FUNCTIONS ==========
+  function showNameModal() {
+    if (!userName) {
+      nameModal.style.display = 'flex';
+      nameInput.focus();
     }
-
-    function showProfile() {
-      document.getElementById('loginCard').style.display = "none";
-      document.getElementById('mainProfile').style.display = "block";
-    }
-
-    function logout() {
-      localStorage.removeItem("loggedIn");
-      document.getElementById('mainProfile').style.display = "none";
-      document.getElementById('loginCard').style.display = "block";
-    }
-
-    window.onload = function() {
-      if (localStorage.getItem("loggedIn") === "true") {
-        showProfile();
+  }
+  
+  function showPasswordModal(roomName) {
+    roomPrompt.textContent = `Enter password for "${roomName}":`;
+    passwordModal.style.display = 'flex';
+    passwordInput.focus();
+    passwordInput.dataset.room = roomName;
+  }
+  
+  function changeBackground(bgFile) {
+    animeBg.style.opacity = '0';
+    setTimeout(() => {
+      animeBg.style.backgroundImage = `url('${bgFile}')`;
+      animeBg.style.opacity = '0.5';
+    }, 300);
+  }
+  
+  function switchRoom(roomName, bgFile) {
+    currentRoom = roomName;
+    roomNameDisplay.textContent = roomName;
+    
+    chatrooms.forEach(room => {
+      room.classList.remove('active');
+      if (room.dataset.room === roomName) {
+        room.classList.add('active');
       }
+    });
+    
+    if (bgFile) {
+      changeBackground(bgFile);
+    }
+    
+    loadMessages();
+    
+    sidebar.classList.remove('show');
+    isSidebarOpen = false;
+  }
+  
+  // ========== MESSAGE LOADING ==========
+  function loadMessages() {
+    console.log("📥 Loading messages for room:", currentRoom);
+    
+    loadingDiv.style.display = 'block';
+    messagesDiv.innerHTML = '<div class="loading">Loading messages...</div>';
+    
+    const messagesRef = database.ref('rooms/' + currentRoom + '/messages');
+    console.log("📡 Database path:", messagesRef.toString());
+    
+    messagesRef.on('value', (snapshot) => {
+      console.log("📨 Firebase se data aaya");
+      loadingDiv.style.display = 'none';
+      messagesDiv.innerHTML = '';
+      
+      if (!snapshot.exists()) {
+        console.log("📭 No messages in room");
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'message received';
+        welcomeDiv.innerHTML = `
+          <div class="sender-name">
+            <span>System</span>
+            <span class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+          🎌 Welcome to <strong>${currentRoom}</strong>!<br>
+          Be the first to send a message!
+        `;
+        messagesDiv.appendChild(welcomeDiv);
+        return;
+      }
+      
+      const messages = snapshot.val();
+      console.log("📊 Messages found:", Object.keys(messages).length);
+      
+      Object.keys(messages).forEach(key => {
+        const msg = messages[key];
+        const isSentByMe = msg.senderId === userId;
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isSentByMe ? 'sent' : 'received'}`;
+        messageDiv.id = `msg-${key}`;
+        
+        const time = new Date(msg.timestamp || Date.now()).toLocaleTimeString([], { 
+          hour: '2-digit', minute: '2-digit' 
+        });
+        
+        let statusIcons = '';
+        if (isSentByMe) {
+          statusIcons = `
+            <div class="status-icons">
+              <span class="status-icon delivered">✓</span>
+              <span class="status-icon read">✓</span>
+            </div>
+          `;
+        }
+        
+        let actionButtons = '';
+        if (isSentByMe) {
+          actionButtons = `
+            <div class="message-actions">
+              <button class="message-action-btn" onclick="forwardMessage('${key}')" title="Forward">↪️</button>
+              <button class="message-action-btn" onclick="deleteMessage('${key}')" title="Delete">🗑️</button>
+            </div>
+          `;
+        }
+        
+        // Handle different message types
+        let messageContent = '';
+        if (msg.type === 'image') {
+          messageContent = `<img src="${msg.fileUrl}" alt="Shared image" style="max-width:200px;border-radius:8px;margin:5px 0;">`;
+        } else if (msg.type === 'file') {
+          messageContent = `📎 File: ${msg.fileName}`;
+        } else if (msg.type === 'voice') {
+          messageContent = `🎤 Voice message`;
+        } else {
+          messageContent = msg.text || '';
+        }
+        
+        messageDiv.innerHTML = `
+          <div class="sender-name">
+            <span>${msg.senderName || 'Unknown'} ${isSentByMe ? '(You)' : ''}</span>
+            <span class="message-time">${time} ${statusIcons}</span>
+          </div>
+          ${messageContent}
+          ${actionButtons}
+        `;
+        
+        if (isSentByMe) {
+          messageDiv.onmouseenter = () => showMessageActions(key);
+          messageDiv.onmouseleave = () => hideMessageActions(key);
+        }
+        
+        messagesDiv.appendChild(messageDiv);
+      });
+      
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }, (error) => {
+      console.error('Load messages error:', error);
+      loadingDiv.style.display = 'none';
+      messagesDiv.innerHTML = '<div class="message received"><div class="sender-name">System</div>Error loading messages. Please refresh.</div>';
+    });
+  }
+  
+  // ========== SEND MESSAGE ==========
+  function sendMessage() {
+    const text = messageInput.value.trim();
+    if (!text || !userName || !userId) {
+      console.log("❌ Cannot send: Missing user info or empty message");
+      return;
+    }
+    
+    console.log("📤 Sending message:", text);
+    
+    const messagesRef = database.ref('rooms/' + currentRoom + '/messages');
+    
+    messagesRef.push({
+      text: text,
+      senderId: userId,
+      senderName: userName,
+      timestamp: Date.now(),
+      status: 'sent',
+      read: false
+    }).then(() => {
+      console.log("✅ Message sent successfully!");
+      messageInput.value = '';
+      messageInput.focus();
+    }).catch(error => {
+      console.error('❌ Send error:', error);
+      alert('Failed to send message');
+    });
+  }
+  
+  // ========== TYPING INDICATOR ==========
+  messageInput.addEventListener('input', () => {
+    if (!userId) return;
+    
+    database.ref('typing/' + userId).set({
+      typing: true,
+      name: userName,
+      timestamp: Date.now()
+    });
+    
+    if (typingTimer) clearTimeout(typingTimer);
+    
+    typingTimer = setTimeout(() => {
+      database.ref('typing/' + userId).set({
+        typing: false,
+        name: userName,
+        timestamp: Date.now()
+      });
+    }, 2000);
+  });
+  
+  // ========== ONLINE STATUS ==========
+  function updateOnlineStatus() {
+    if (!userId) return;
+    
+    const userStatusRef = database.ref('status/' + userId);
+    const isOnline = { 
+      name: userName, 
+      online: true, 
+      lastSeen: Date.now(),
+      room: currentRoom
     };
-  </script>
+    const isOffline = { 
+      name: userName, 
+      online: false, 
+      lastSeen: Date.now(),
+      room: currentRoom
+    };
+    
+    userStatusRef.set(isOnline);
+    userStatusRef.onDisconnect().set(isOffline);
+    
+    // Listen for online users
+    database.ref('status').on('value', (snapshot) => {
+      let onlineUsers = 0;
+      let onlineUsersHTML = '';
+      
+      snapshot.forEach((child) => {
+        const status = child.val();
+        if (status.online && status.name) {
+          onlineUsers++;
+          
+          onlineUsersHTML += `
+            <div class="online-user">
+              <div class="user-avatar">${status.name.charAt(0).toUpperCase()}</div>
+              <div>
+                <strong>${status.name}</strong><br>
+                <small>In: ${status.room || 'general'}</small>
+              </div>
+            </div>
+          `;
+        }
+      });
+      
+      onlineBadge.textContent = onlineUsers;
+      onlineCount.textContent = onlineUsers + ' online';
+      onlineUsersList.innerHTML = onlineUsersHTML || '<div style="text-align:center;padding:20px;opacity:0.7;">No users online</div>';
+    });
+  }
+  
+  // ========== ONLINE SIDEBAR ==========
+  function toggleOnlineSidebar() {
+    isOnlineSidebarOpen = !isOnlineSidebarOpen;
+    onlineSidebar.classList.toggle('show', isOnlineSidebarOpen);
+  }
+  
+  // ========== EVENT LISTENERS ==========
+  // Name submission
+  submitName.addEventListener('click', () => {
+    userName = nameInput.value.trim() || 'AnimeFan';
+    localStorage.setItem('animechat_username', userName);
+    
+    nameModal.style.display = 'none';
+    document.title = userName + ' - AnimeChat Pro';
+    
+    initializeUser();
+  });
+  
+  nameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      userName = nameInput.value.trim() || 'AnimeFan';
+      localStorage.setItem('animechat_username', userName);
+      
+      nameModal.style.display = 'none';
+      document.title = userName + ' - AnimeChat Pro';
+      
+      initializeUser();
+    }
+  });
+  
+  // Password submission
+  submitPassword.addEventListener('click', () => {
+    const roomName = passwordInput.dataset.room;
+    const requiredPassword = SECRET_PASSWORDS[roomName];
+    const enteredPassword = passwordInput.value.trim().toUpperCase();
+    
+    if (enteredPassword === requiredPassword) {
+      chatrooms.forEach(room => {
+        if (room.dataset.room === roomName) {
+          const bgFile = room.dataset.bg;
+          switchRoom(roomName, bgFile);
+        }
+      });
+      
+      passwordModal.style.display = 'none';
+      passwordInput.value = '';
+    } else {
+      alert('❌ Wrong password!');
+      passwordInput.focus();
+      passwordInput.select();
+    }
+  });
+  
+  passwordInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      submitPassword.click();
+    }
+  });
+  
+  // Chatroom selection
+  chatrooms.forEach(room => {
+    room.addEventListener('click', () => {
+      const roomName = room.dataset.room;
+      const password = room.dataset.password;
+      const bgFile = room.dataset.bg;
+      
+      if (roomName === currentRoom) {
+        sidebar.classList.remove('show');
+        isSidebarOpen = false;
+        return;
+      }
+      
+      if (password) {
+        showPasswordModal(roomName);
+      } else {
+        switchRoom(roomName, bgFile);
+      }
+    });
+  });
+  
+  // Send message
+  sendButton.addEventListener('click', sendMessage);
+  
+  messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  
+  // Menu button
+  menuBtn.addEventListener('click', () => {
+    isSidebarOpen = !isSidebarOpen;
+    sidebar.classList.toggle('show', isSidebarOpen);
+  });
+  
+  // Navigation
+  navRooms.addEventListener('click', () => {
+    isSidebarOpen = !isSidebarOpen;
+    sidebar.classList.toggle('show', isSidebarOpen);
+  });
+  
+  navTheme.addEventListener('click', () => {
+    const bgFiles = ['background.png', 'bg1.png', 'bg2.png', 'bg3.png', 'bg4.png', 'bg5.png'];
+    const currentBg = animeBg.style.backgroundImage;
+    let currentIndex = 0;
+    
+    for (let i = 0; i < bgFiles.length; i++) {
+      if (currentBg.includes(bgFiles[i])) {
+        currentIndex = i;
+        break;
+      }
+    }
+    
+    const nextIndex = (currentIndex + 1) % bgFiles.length;
+    changeBackground(bgFiles[nextIndex]);
+  });
+  
+  // Close sidebars when clicking outside
+  document.addEventListener('click', (e) => {
+    if (isSidebarOpen && !sidebar.contains(e.target) && !menuBtn.contains(e.target) && !navRooms.contains(e.target)) {
+      sidebar.classList.remove('show');
+      isSidebarOpen = false;
+    }
+    
+    if (isOnlineSidebarOpen && !onlineSidebar.contains(e.target) && !e.target.closest('.online-users')) {
+      onlineSidebar.classList.remove('show');
+      isOnlineSidebarOpen = false;
+    }
+  });
+  
+  // ========== INITIALIZE USER ==========
+  function initializeUser() {
+    console.log("🔐 Initializing user:", userName);
+    
+    auth.signInAnonymously()
+      .then((userCredential) => {
+        userId = userCredential.user.uid;
+        console.log('✅ Signed in. User ID:', userId);
+        
+        // Save user info
+        database.ref('users/' + userId).set({
+          name: userName,
+          joined: Date.now(),
+          lastActive: Date.now()
+        });
+        
+        // Start app functions
+        updateOnlineStatus();
+        loadMessages();
+        messageInput.focus();
+        
+        console.log("🎉 User initialized successfully!");
+        
+      }).catch(error => {
+        console.error('❌ Sign in error:', error);
+        alert('Connection error! Please refresh.');
+      });
+  }
+  
+  // ========== INITIALIZE APP ==========
+  window.addEventListener('DOMContentLoaded', () => {
+    console.log('🎌 AnimeChat Pro - ZAFAR Rooms LOADED');
+    console.log('🔑 SECRET Passwords:', SECRET_PASSWORDS);
+    
+    // Check if user already has a name
+    if (userName) {
+      console.log("👤 Found saved user:", userName);
+      document.title = userName + ' - AnimeChat Pro';
+      initializeUser();
+    } else {
+      console.log("👤 No saved user - showing modal");
+      showNameModal();
+    }
+    
+    // Auto-focus message input
+    setTimeout(() => {
+      messageInput.focus();
+    }, 1000);
+  });
+</script>
 </body>
 </html>
