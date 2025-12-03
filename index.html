@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AnimeChat Pro - ZAFAR Rooms</title>
   <style>
-    /* COMPACT CSS (optimized) */
     body{font-family:Arial,sans-serif;margin:0;padding:0;background:#000;color:#fff;width:100%;height:100vh;overflow:hidden}
     .anime-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;background:#000 url('background.png') center/cover;opacity:0.5;filter:brightness(0.8) contrast(1.3) saturate(1.5)}
     .red-light{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 50%,rgba(255,45,45,0.4) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(255,20,20,0.3) 0%,transparent 50%);z-index:-1;mix-blend-mode:screen}
@@ -114,13 +113,13 @@
   
   <div class="input-area">
     <button class="sticker-btn" id="stickerBtn">🎌</button>
-    <button id="emojiBtn" style="background:none;border:none;color:#ff2d2d;font-size:20px;cursor:pointer">
+    <button id="emojiBtn" style="background:none;border:none;color:#ff2d2d;font-size:20px;cursor:pointer">😀</button>
     <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
     <button id="sendButton">➤</button>
   </div>
   
   <div class="emoji-picker" id="emojiPicker">
-    <button class="emoji-btn" data-emoji="class="emoji-btn" data-emoji="😂">😂</button><button class="emoji-btn" data-emoji="😍">😍</button><button class="emoji-btn" data-emoji="🥰">🥰</button><button class="emoji-btn" data-emoji="😎">😎</button><button class="emoji-btn" data-emoji="🤩">🤩</button>
+    <button class="emoji-btn" data-emoji="😀">😀</button><button class="emoji-btn" data-emoji="😂">😂</button><button class="emoji-btn" data-emoji="😍">😍</button><button class="emoji-btn" data-emoji="🥰">🥰</button><button class="emoji-btn" data-emoji="😎">😎</button><button class="emoji-btn" data-emoji="🤩">🤩</button>
     <button class="emoji-btn" data-emoji="😊">😊</button><button class="emoji-btn" data-emoji="🙏">🙏</button><button class="emoji-btn" data-emoji="🎉">🎉</button><button class="emoji-btn" data-emoji="🎌">🎌</button><button class="emoji-btn" data-emoji="🔥">🔥</button><button class="emoji-btn" data-emoji="💀">💀</button>
   </div>
   
@@ -169,357 +168,737 @@
 </html>
 
 <script>
-// ========== COMPACT FIXED CODE ==========
-const CONFIG={SECRET_PASSWORDS:{Chatroom1:"ZAFAR1",Chatroom2:"ZAFAR2",Chatroom3:"ZAFAR3",Chatroom4:"ZAFAR4",Chatroom5:"ZAFAR5"},STICKERS:[{id:1,name:"Gojo Satoru",file:"sticker1.png"},{id:2,name:"Nezuko Kamado",file:"sticker2.png"},{id:3,name:"Luffy",file:"sticker3.png"},{id:4,name:"Sailor Moon",file:"sticker4.png"},{id:5,name:"Tanjiro",file:"sticker5.png"},{id:6,name:"Pikachu",file:"sticker6.png"},{id:7,name:"Kakashi",file:"sticker7.png"},{id:8,name:"Mikasa",file:"sticker8.png"},{id:9,name:"Totoro",file:"sticker9.png"},{id:10,name:"Anya Forger",file:"sticker10.png"}],FIREBASE_CONFIG:{apiKey:"AIzaSyB8zMhCjGxmHBpruABYA4pBj3jU0uMHCs0",authDomain:"zafi-chat-app.firebaseapp.com",projectId:"zafi-chat-app",storageBucket:"zafi-chat-app.firebasestorage.app",messagingSenderId:"989950346714",appId:"1:989950346714:web:7bad7f8fae2a72ce0bace3",measurementId:"G-XW5MS2D2K7",databaseURL:"https://zafi-chat-app-default-rtdb.asia-southeast1.firebasedatabase.app"}};
+// ========== FIXED CONFIG ==========
+const CONFIG = {
+  SECRET_PASSWORDS: {
+    "Chatroom1": "ZAFAR1",
+    "Chatroom2": "ZAFAR2", 
+    "Chatroom3": "ZAFAR3",
+    "Chatroom4": "ZAFAR4",
+    "Chatroom5": "ZAFAR5"
+  },
+  
+  STICKERS: [
+    { id: 1, name: "Gojo Satoru", file: "sticker1.png" },
+    { id: 2, name: "Nezuko Kamado", file: "sticker2.png" },
+    { id: 3, name: "Luffy", file: "sticker3.png" },
+    { id: 4, name: "Sailor Moon", file: "sticker4.png" },
+    { id: 5, name: "Tanjiro", file: "sticker5.png" },
+    { id: 6, name: "Pikachu", file: "sticker6.png" },
+    { id: 7, name: "Kakashi", file: "sticker7.png" },
+    { id: 8, name: "Mikasa", file: "sticker8.png" },
+    { id: 9, name: "Totoro", file: "sticker9.png" },
+    { id: 10, name: "Anya Forger", file: "sticker10.png" }
+  ],
+  
+  FIREBASE_CONFIG: {
+    apiKey: "AIzaSyB8zMhCjGxmHBpruABYA4pBj3jU0uMHCs0",
+    authDomain: "zafi-chat-app.firebaseapp.com",
+    projectId: "zafi-chat-app",
+    storageBucket: "zafi-chat-app.firebasestorage.app",
+    messagingSenderId: "989950346714",
+    appId: "1:989950346714:web:7bad7f8fae2a72ce0bace3",
+    measurementId: "G-XW5MS2D2K7",
+    databaseURL: "https://zafi-chat-app-default-rtdb.asia-southeast1.firebasedatabase.app"
+  }
+};
 
-let currentUser={name:localStorage.getItem('animechat_username')||'',id:'',room:'general'};
-let app={firebase:null,database:null,auth:null};
+// ========== FIXED STATE ==========
+let currentUser = {
+  name: '',
+  id: '',
+  room: 'general'
+};
 
-const elements={chatContainer:document.getElementById('chatContainer'),messages:document.getElementById('messages'),messageInput:document.getElementById('messageInput'),sendButton:document.getElementById('sendButton'),stickerBtn:document.getElementById('stickerBtn'),stickerMenu:document.getElementById('stickerMenu'),closeStickerMenu:document.getElementById('closeStickerMenu'),stickerGrid:document.getElementById('stickerGrid'),nameModal:document.getElementById('nameModal'),passwordModal:document.getElementById('passwordModal'),nameInput:document.getElementById('nameInput'),passwordInput:document.getElementById('passwordInput'),roomPrompt:document.getElementById('roomPrompt'),sidebar:document.getElementById('sidebar'),onlineSidebar:document.getElementById('onlineSidebar'),menuBtn:document.getElementById('menuBtn'),onlineBtn:document.getElementById('onlineBtn'),secretBtn:document.getElementById('secretBtn'),emojiBtn:document.getElementById('emojiBtn'),emojiPicker:document.getElementById('emojiPicker'),roomNameDisplay:document.getElementById('roomNameDisplay'),onlineCount:document.getElementById('onlineCount'),onlineBadge:document.getElementById('onlineBadge'),onlineUsersList:document.getElementById('onlineUsersList'),secretContainer:document.getElementById('secretContainer'),chatrooms:document.querySelectorAll('.chatroom'),navItems:document.querySelectorAll('.nav-item'),loading:document.getElementById('loading')};
+let app = {
+  firebase: null,
+  database: null,
+  auth: null
+};
 
-// ========== SIMPLIFIED FIREBASE (NO CRASH) ==========
-function initializeFirebase(){
-  return new Promise((resolve,reject)=>{
-    if(typeof firebase==='undefined'){
-      const script=document.createElement('script');
-      script.src='https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js';
-      script.onload=()=>{
-        const authScript=document.createElement('script');
-        authScript.src='https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js';
-        authScript.onload=()=>{
-          const dbScript=document.createElement('script');
-          dbScript.src='https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js';
-          dbScript.onload=()=>{
-            try{
-              app.firebase=firebase.initializeApp(CONFIG.FIREBASE_CONFIG);
-              app.database=firebase.database();
-              app.auth=firebase.auth();
+// ========== FIXED ELEMENTS ==========
+const elements = {
+  chatContainer: document.getElementById('chatContainer'),
+  messages: document.getElementById('messages'),
+  messageInput: document.getElementById('messageInput'),
+  sendButton: document.getElementById('sendButton'),
+  stickerBtn: document.getElementById('stickerBtn'),
+  stickerMenu: document.getElementById('stickerMenu'),
+  closeStickerMenu: document.getElementById('closeStickerMenu'),
+  stickerGrid: document.getElementById('stickerGrid'),
+  nameModal: document.getElementById('nameModal'),
+  passwordModal: document.getElementById('passwordModal'),
+  nameInput: document.getElementById('nameInput'),
+  passwordInput: document.getElementById('passwordInput'),
+  roomPrompt: document.getElementById('roomPrompt'),
+  sidebar: document.getElementById('sidebar'),
+  onlineSidebar: document.getElementById('onlineSidebar'),
+  menuBtn: document.getElementById('menuBtn'),
+  onlineBtn: document.getElementById('onlineBtn'),
+  secretBtn: document.getElementById('secretBtn'),
+  emojiBtn: document.getElementById('emojiBtn'),
+  emojiPicker: document.getElementById('emojiPicker'),
+  roomNameDisplay: document.getElementById('roomNameDisplay'),
+  onlineCount: document.getElementById('onlineCount'),
+  onlineBadge: document.getElementById('onlineBadge'),
+  onlineUsersList: document.getElementById('onlineUsersList'),
+  secretContainer: document.getElementById('secretContainer'),
+  chatrooms: document.querySelectorAll('.chatroom'),
+  navItems: document.querySelectorAll('.nav-item'),
+  loading: document.getElementById('loading')
+};
+
+// ========== FIXED FIREBASE ==========
+function initializeFirebase() {
+  return new Promise((resolve) => {
+    if (typeof firebase === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js';
+      script.onload = () => {
+        const authScript = document.createElement('script');
+        authScript.src = 'https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js';
+        authScript.onload = () => {
+          const dbScript = document.createElement('script');
+          dbScript.src = 'https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js';
+          dbScript.onload = () => {
+            try {
+              app.firebase = firebase.initializeApp(CONFIG.FIREBASE_CONFIG);
+              app.database = firebase.database();
+              app.auth = firebase.auth();
               console.log('✅ Firebase loaded');
               resolve(true);
-            }catch(e){
-              console.warn('⚠️ Firebase error:',e);
-              setupOfflineMode();
+            } catch (e) {
+              console.warn('Firebase error');
               resolve(false);
             }
           };
-          dbScript.onerror=()=>{console.warn('Firebase DB failed');setupOfflineMode();resolve(false);};
+          dbScript.onerror = () => resolve(false);
           document.head.appendChild(dbScript);
         };
-        authScript.onerror=()=>{console.warn('Firebase Auth failed');setupOfflineMode();resolve(false);};
+        authScript.onerror = () => resolve(false);
         document.head.appendChild(authScript);
       };
-      script.onerror=()=>{console.warn('Firebase failed to load');setupOfflineMode();resolve(false);};
+      script.onerror = () => resolve(false);
       document.head.appendChild(script);
-    }else{
-      try{
-        app.firebase=firebase.initializeApp(CONFIG.FIREBASE_CONFIG);
-        app.database=firebase.database();
-        app.auth=firebase.auth();
+    } else {
+      try {
+        app.firebase = firebase.initializeApp(CONFIG.FIREBASE_CONFIG);
+        app.database = firebase.database();
+        app.auth = firebase.auth();
         console.log('✅ Firebase loaded');
         resolve(true);
-      }catch(e){console.warn('⚠️ Firebase error');setupOfflineMode();resolve(false);}
+      } catch (e) {
+        resolve(false);
+      }
     }
   });
 }
 
-function setupOfflineMode(){
-  console.log('🌐 Using offline mode');
-  app.database={ref:(p)=>({
-    push:(d)=>Promise.reject('offline'),
-    set:(d)=>Promise.reject('offline'),
-    on:()=>{},
-    once:()=>Promise.resolve({val:()=>null}),
-    remove:()=>Promise.reject('offline'),
-    orderByChild:()=>({limitToLast:()=>({on:()=>{}})})
-  })};
-  showSystemMessage('⚠️ Offline Mode - Connect for real chat');
-}
-
-// ========== SIMPLE STICKER SYSTEM ==========
-function initStickerSystem(){
-  elements.stickerBtn.addEventListener('click',()=>{
-    elements.stickerMenu.style.display=elements.stickerMenu.style.display==='flex'?'none':'flex';
-    elements.emojiPicker.style.display='none';
+// ========== FIXED STICKER SYSTEM ==========
+function initStickerSystem() {
+  elements.stickerBtn.addEventListener('click', () => {
+    elements.stickerMenu.style.display = elements.stickerMenu.style.display === 'flex' ? 'none' : 'flex';
+    elements.emojiPicker.style.display = 'none';
   });
-  elements.closeStickerMenu.addEventListener('click',()=>elements.stickerMenu.style.display='none');
-  document.addEventListener('click',(e)=>{
-    if(!elements.stickerMenu.contains(e.target)&&e.target!==elements.stickerBtn)
-      elements.stickerMenu.style.display='none';
+  
+  elements.closeStickerMenu.addEventListener('click', () => {
+    elements.stickerMenu.style.display = 'none';
   });
+  
+  document.addEventListener('click', (e) => {
+    if (!elements.stickerMenu.contains(e.target) && e.target !== elements.stickerBtn) {
+      elements.stickerMenu.style.display = 'none';
+    }
+  });
+  
   loadStickers();
 }
 
-function loadStickers(){
-  elements.stickerGrid.innerHTML='';
-  CONFIG.STICKERS.forEach(s=>{
-    const div=document.createElement('div');
-    div.className='sticker-item';
-    div.title=s.name;
-    div.innerHTML=`<img src="${s.file}" alt="${s.name}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"100\" height=\"100\" fill=\"%23ff2d2d\"/><text x=\"50\" y=\"60\" font-size=\"40\" fill=\"white\" text-anchor=\"middle\">${s.id}</text></svg>'">`;
-    div.addEventListener('click',()=>sendSticker(s.file,s.name));
-    elements.stickerGrid.appendChild(div);
-  });
-}
-
-function sendSticker(file,name){
-  if(!currentUser.name){alert('Enter name first');elements.nameModal.style.display='flex';return;}
-  if(!currentUser.room){alert('Join room first');return;}
-  console.log(`🎌 Sending: ${name}`);
-  const msg={type:'sticker',stickerFile:file,stickerName:name,senderId:currentUser.id||'demo',senderName:currentUser.name,timestamp:Date.now()};
-  if(app.database&&app.database.ref){
-    app.database.ref('rooms/'+currentUser.room+'/messages').push(msg)
-      .then(()=>elements.stickerMenu.style.display='none')
-      .catch(e=>{console.warn('Failed to send:',e);addMessageToUI(msg);});
-  }else{addMessageToUI(msg);}
-}
-
-// ========== SIMPLE MESSAGE SYSTEM ==========
-function initMessageSystem(){
-  elements.sendButton.addEventListener('click',sendMessage);
-  elements.messageInput.addEventListener('keypress',(e)=>{
-    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
-  });
-}
-
-function sendMessage(){
-  const text=elements.messageInput.value.trim();
-  if(!text)return;
-  if(!currentUser.name){alert('Enter name first');elements.nameModal.style.display='flex';return;}
-  console.log(`💬 Sending: ${text.substring(0,30)}`);
-  const msg={text:text,senderId:currentUser.id||'demo',senderName:currentUser.name,timestamp:Date.now(),type:'text'};
-  if(app.database&&app.database.ref){
-    app.database.ref('rooms/'+currentUser.room+'/messages').push(msg)
-      .then(()=>elements.messageInput.value='')
-      .catch(e=>{console.warn('Send failed:',e);addMessageToUI(msg);elements.messageInput.value='';});
-  }else{addMessageToUI(msg);elements.messageInput.value='';}
-}
-
-function loadMessages(){
-  elements.loading.style.display='block';
-  elements.messages.innerHTML='';
-  if(app.database&&app.database.ref){
-    app.database.ref('rooms/'+currentUser.room+'/messages').orderByChild('timestamp').limitToLast(50).on('value',snap=>{
-      elements.loading.style.display='none';
-      elements.messages.innerHTML='';
-      if(snap.exists()){
-        const msgs=[];
-        snap.forEach(c=>msgs.push({id:c.key,...c.val()}));
-        msgs.sort((a,b)=>a.timestamp-b.timestamp).forEach(m=>addMessageToUI(m));
-        setTimeout(()=>elements.chatContainer.scrollTop=elements.chatContainer.scrollHeight,100);
-      }else{showSystemMessage(`Welcome to ${currentUser.room}! Start chatting.`);}
-    },e=>{console.warn('Load error:',e);showDemoMessages();});
-  }else{setTimeout(showDemoMessages,500);}
-}
-
-function showDemoMessages(){
-  elements.loading.style.display='none';
-  const demos=[
-    {senderName:"System",text:"Welcome to AnimeChat Pro!",time:"10:00"},
-    {senderName:"Bot",text:"This is offline demo. Connect for real chat!",time:"10:01"},
-    {senderName:"Admin",text:"Send messages, stickers & enjoy!",time:"10:02"}
-  ];
-  demos.forEach(m=>{
-    const d=document.createElement('div');
-    d.className='message received';
-    d.innerHTML=`<div class="sender-name"><span>${m.senderName}</span><span class="message-time">${m.time}</span></div>${m.text}`;
-    elements.messages.appendChild(d);
-  });
-}
-
-function addMessageToUI(m){
-  const isMe=m.senderId===currentUser.id||m.senderName===currentUser.name;
-  const d=document.createElement('div');
-  d.className=`message ${isMe?'sent':'received'}`;
-  const t=new Date(m.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  let c=m.type==='sticker'?`<div style="text-align:center"><img src="${m.stickerFile}" alt="${m.stickerName}" style="max-width:120px;border-radius:10px;border:2px solid rgba(255,255,255,0.1)"><div style="font-size:11px;opacity:0.7;margin-top:5px">${m.stickerName}</div></div>`:m.text;
-  d.innerHTML=`<div class="sender-name"><span>${m.senderName}${isMe?' (You)':''}</span><span class="message-time">${t}</span></div>${c}`;
-  elements.messages.appendChild(d);
-}
-
-function showSystemMessage(t){
-  const d=document.createElement('div');
-  d.className='message received';
-  d.style.background='rgba(255,45,45,0.1)';
-  d.style.border='1px dashed rgba(255,45,45,0.3)';
-  d.innerHTML=`<div class="sender-name"><span style="color:#ff2d2d">⚙️ System</span><span class="message-time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div>${t}`;
-  elements.messages.appendChild(d);
-}
-
-// ========== SIMPLE UI SYSTEMS ==========
-function initEmojiSystem(){
-  elements.emojiBtn.addEventListener('click',(e)=>{
-    e.stopPropagation();
-    elements.emojiPicker.style.display=elements.emojiPicker.style.display==='grid'?'none':'grid';
-    elements.stickerMenu.style.display='none';
-  });
-  elements.emojiPicker.querySelectorAll('.emoji-btn').forEach(b=>{
-    b.addEventListener('click',()=>{
-      elements.messageInput.value+=b.getAttribute('data-emoji');
-      elements.messageInput.focus();
-      elements.emojiPicker.style.display='none';
+function loadStickers() {
+  elements.stickerGrid.innerHTML = '';
+  
+  CONFIG.STICKERS.forEach(sticker => {
+    const stickerDiv = document.createElement('div');
+    stickerDiv.className = 'sticker-item';
+    stickerDiv.title = sticker.name;
+    
+    // ALAG ALAG STICKER KE LIYE EVENT LISTENER
+    stickerDiv.innerHTML = `
+      <img src="${sticker.file}" alt="${sticker.name}" 
+           onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"100\" height=\"100\" fill=\"%23ff2d2d\"/><text x=\"50\" y=\"60\" font-size=\"40\" fill=\"white\" text-anchor=\"middle\">${sticker.id}</text></svg>'">
+    `;
+    
+    // HAR STICKER KA ALAG EVENT LISTENER
+    stickerDiv.addEventListener('click', () => {
+      console.log(`🎌 Selected sticker: ${sticker.name}`);
+      sendSticker(sticker.file, sticker.name);
     });
+    
+    elements.stickerGrid.appendChild(stickerDiv);
   });
-  document.addEventListener('click',(e)=>{
-    if(!elements.emojiPicker.contains(e.target)&&e.target!==elements.emojiBtn)
-      elements.emojiPicker.style.display='none';
-  });
+  
+  console.log(`✅ Loaded ${CONFIG.STICKERS.length} stickers`);
 }
 
-function initSidebarSystem(){
-  let active=null;
-  function toggle(s){
-    if(active===s){s.classList.remove('show');active=null;}
-    else{if(active)active.classList.remove('show');s.classList.add('show');active=s;}
-    elements.stickerMenu.style.display='none';
-    elements.emojiPicker.style.display='none';
+function sendSticker(stickerFile, stickerName) {
+  if (!currentUser.name) {
+    alert('Please enter your name first!');
+    elements.nameModal.style.display = 'flex';
+    return;
   }
-  elements.menuBtn.addEventListener('click',()=>toggle(elements.sidebar));
-  elements.onlineBtn.addEventListener('click',()=>toggle(elements.onlineSidebar));
-  document.addEventListener('click',(e)=>{
-    if(active&&!active.contains(e.target)&&e.target!==elements.menuBtn&&e.target!==elements.onlineBtn){
-      active.classList.remove('show');active=null;}
-  });
+  
+  if (!currentUser.room) {
+    alert('Please join a room first!');
+    return;
+  }
+  
+  console.log(`🎌 Sending sticker: ${stickerName}`);
+  
+  const messageData = {
+    type: 'sticker',
+    stickerFile: stickerFile,
+    stickerName: stickerName,
+    senderId: currentUser.id,
+    senderName: currentUser.name,
+    timestamp: Date.now()
+  };
+  
+  // REAL-TIME FIREBASE SEND
+  if (app.database && app.database.ref) {
+    app.database.ref('rooms/' + currentUser.room + '/messages').push(messageData)
+      .then(() => {
+        console.log('✅ Sticker sent to Firebase');
+        elements.stickerMenu.style.display = 'none';
+      })
+      .catch(error => {
+        console.warn('Failed to send sticker:', error);
+        // LOCAL FALLBACK
+        addMessageToUI(messageData);
+        elements.stickerMenu.style.display = 'none';
+      });
+  } else {
+    // LOCAL FALLBACK
+    addMessageToUI(messageData);
+    elements.stickerMenu.style.display = 'none';
+  }
 }
 
-function initSecretPanel(){
-  elements.secretBtn.addEventListener('click',()=>{
-    const v=elements.secretContainer.style.display==='block';
-    elements.secretContainer.style.display=v?'none':'block';
-    if(!v){
-      document.getElementById('secretPass1').textContent=CONFIG.SECRET_PASSWORDS.Chatroom1;
-      document.getElementById('secretPass2').textContent=CONFIG.SECRET_PASSWORDS.Chatroom2;
-      document.getElementById('secretPass3').textContent=CONFIG.SECRET_PASSWORDS.Chatroom3;
-      document.getElementById('secretPass4').textContent=CONFIG.SECRET_PASSWORDS.Chatroom4;
-      document.getElementById('secretPass5').textContent=CONFIG.SECRET_PASSWORDS.Chatroom5;
+// ========== FIXED MESSAGE SYSTEM ==========
+function initMessageSystem() {
+  elements.sendButton.addEventListener('click', sendMessage);
+  
+  elements.messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
     }
   });
-  document.addEventListener('click',(e)=>{
-    if(!elements.secretContainer.contains(e.target)&&e.target!==elements.secretBtn)
-      elements.secretContainer.style.display='none';
+}
+
+function sendMessage() {
+  const text = elements.messageInput.value.trim();
+  if (!text) return;
+  
+  if (!currentUser.name) {
+    alert('Please enter your name first!');
+    elements.nameModal.style.display = 'flex';
+    return;
+  }
+  
+  console.log(`💬 Sending: ${text}`);
+  
+  const messageData = {
+    text: text,
+    senderId: currentUser.id,
+    senderName: currentUser.name,
+    timestamp: Date.now(),
+    type: 'text'
+  };
+  
+  // REAL-TIME FIREBASE SEND
+  if (app.database && app.database.ref) {
+    app.database.ref('rooms/' + currentUser.room + '/messages').push(messageData)
+      .then(() => {
+        elements.messageInput.value = '';
+        elements.messageInput.focus();
+      })
+      .catch(error => {
+        console.warn('Failed to send:', error);
+        // LOCAL FALLBACK
+        addMessageToUI(messageData);
+        elements.messageInput.value = '';
+        elements.messageInput.focus();
+      });
+  } else {
+    // LOCAL FALLBACK
+    addMessageToUI(messageData);
+    elements.messageInput.value = '';
+    elements.messageInput.focus();
+  }
+}
+
+// ========== FIXED ROOM SYSTEM ==========
+let messageListener = null;
+
+function loadMessages() {
+  elements.loading.style.display = 'block';
+  elements.messages.innerHTML = '';
+  
+  // PEHLE WALA LISTENER HATAO
+  if (messageListener && app.database) {
+    app.database.ref('rooms/' + currentUser.room + '/messages').off('value', messageListener);
+  }
+  
+  if (app.database && app.database.ref) {
+    const messagesRef = app.database.ref('rooms/' + currentUser.room + '/messages');
+    
+    // REAL-TIME LISTENER (DONO USERS KO SAME MESSAGE DIKHEGA)
+    messageListener = messagesRef.orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+      elements.loading.style.display = 'none';
+      elements.messages.innerHTML = '';
+      
+      if (snapshot.exists()) {
+        const messages = [];
+        snapshot.forEach(child => {
+          messages.push({
+            id: child.key,
+            ...child.val()
+          });
+        });
+        
+        messages.sort((a, b) => a.timestamp - b.timestamp);
+        messages.forEach(msg => addMessageToUI(msg));
+        
+        setTimeout(() => {
+          elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
+        }, 100);
+      } else {
+        showSystemMessage(`Welcome to ${currentUser.room}! Be the first to send a message.`);
+      }
+    }, (error) => {
+      console.warn('Load error:', error);
+      showDemoMessages();
+    });
+  } else {
+    showDemoMessages();
+  }
+}
+
+function showDemoMessages() {
+  elements.loading.style.display = 'none';
+  elements.messages.innerHTML = '';
+  
+  const demoMessages = [
+    { senderName: "System", text: "Welcome to AnimeChat Pro!", timestamp: Date.now() - 60000 },
+    { senderName: "Bot", text: "Connect to internet for real-time chat with other users!", timestamp: Date.now() - 30000 },
+    { senderName: "Admin", text: "Send messages, stickers & enjoy!", timestamp: Date.now() }
+  ];
+  
+  demoMessages.forEach(msg => {
+    addMessageToUI(msg);
   });
 }
 
-function initRoomSystem(){
-  elements.chatrooms.forEach(r=>{
-    r.addEventListener('click',()=>{
-      const rn=r.getAttribute('data-room'),pw=r.getAttribute('data-password'),bg=r.getAttribute('data-bg');
-      if(rn===currentUser.room){elements.sidebar.classList.remove('show');return;}
-      if(pw){showPasswordModal(rn,pw,bg);}else{switchRoom(rn,bg);}
+function addMessageToUI(message) {
+  const isSentByMe = message.senderId === currentUser.id;
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${isSentByMe ? 'sent' : 'received'}`;
+  
+  const time = new Date(message.timestamp).toLocaleTimeString([], { 
+    hour: '2-digit', minute: '2-digit' 
+  });
+  
+  let content = '';
+  if (message.type === 'sticker') {
+    content = `
+      <div style="text-align:center;padding:5px;">
+        <img src="${message.stickerFile}" alt="${message.stickerName}" 
+             style="max-width:120px;max-height:120px;border-radius:10px;border:2px solid rgba(255,255,255,0.1);"
+             onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\"color:#ff2d2d;padding:10px;\">🎌 ${message.stickerName}</div>';">
+        <div style="font-size:11px;opacity:0.7;margin-top:5px;background:rgba(255,255,255,0.05);padding:3px 8px;border-radius:10px;">${message.stickerName}</div>
+      </div>
+    `;
+  } else {
+    content = message.text || '';
+  }
+  
+  messageDiv.innerHTML = `
+    <div class="sender-name">
+      <span>${message.senderName || 'Unknown'} ${isSentByMe ? '(You)' : ''}</span>
+      <span class="message-time">${time}</span>
+    </div>
+    ${content}
+  `;
+  
+  elements.messages.appendChild(messageDiv);
+}
+
+function showSystemMessage(text) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'message received';
+  messageDiv.style.background = 'rgba(255, 45, 45, 0.1)';
+  messageDiv.style.border = '1px dashed rgba(255, 45, 45, 0.3)';
+  messageDiv.innerHTML = `
+    <div class="sender-name">
+      <span style="color:#ff2d2d;">⚙️ System</span>
+      <span class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+    </div>
+    ${text}
+  `;
+  elements.messages.appendChild(messageDiv);
+}
+
+// ========== FIXED ROOM MANAGEMENT ==========
+function initRoomSystem() {
+  elements.chatrooms.forEach(room => {
+    room.addEventListener('click', () => {
+      const roomName = room.getAttribute('data-room');
+      const password = room.getAttribute('data-password');
+      const bgFile = room.getAttribute('data-bg');
+      
+      if (roomName === currentUser.room) {
+        elements.sidebar.classList.remove('show');
+        return;
+      }
+      
+      if (password) {
+        showPasswordModal(roomName, password, bgFile);
+      } else {
+        switchRoom(roomName, bgFile);
+      }
     });
   });
 }
 
-function showPasswordModal(rn,pw,bg){
-  elements.roomPrompt.textContent=`Enter password for "${rn}":`;
-  elements.passwordModal.style.display='flex';
+function showPasswordModal(roomName, requiredPassword, bgFile) {
+  elements.roomPrompt.textContent = `Enter password for "${roomName}":`;
+  elements.passwordModal.style.display = 'flex';
   elements.passwordInput.focus();
-  elements.passwordInput.value='';
-  elements.passwordModal.dataset.room=rn;
-  elements.passwordModal.dataset.password=pw;
-  elements.passwordModal.dataset.bg=bg;
+  elements.passwordInput.value = '';
+  
+  elements.passwordModal.dataset.room = roomName;
+  elements.passwordModal.dataset.password = requiredPassword;
+  elements.passwordModal.dataset.bg = bgFile;
 }
 
-function switchRoom(rn,bg){
-  console.log(`🚪 Switching to: ${rn}`);
-  elements.messages.innerHTML='<div class="loading">Loading...</div>';
-  currentUser.room=rn;
-  elements.roomNameDisplay.textContent=rn;
-  elements.chatrooms.forEach(r=>{
-    r.classList.remove('active');
-    if(r.getAttribute('data-room')===rn)r.classList.add('active');
-  });
-  if(bg)document.getElementById('animeBg').style.backgroundImage=`url('${bg}')`;
-  loadMessages();
-  elements.sidebar.classList.remove('show');
-  setTimeout(()=>showSystemMessage(`Welcome to ${rn}! Start chatting.`),500);
-}
-
-// ========== EVENT LISTENERS ==========
-function initEventListeners(){
-  document.getElementById('submitName').addEventListener('click',()=>{
-    currentUser.name=elements.nameInput.value.trim()||'AnimeFan'+Math.floor(Math.random()*1000);
-    if(currentUser.name){
-      localStorage.setItem('animechat_username',currentUser.name);
-      elements.nameModal.style.display='none';
-      document.title=currentUser.name+' - AnimeChat Pro';
-      initializeUser();
+function switchRoom(roomName, bgFile) {
+  console.log(`🚪 Switching to room: ${roomName}`);
+  
+  // CLEAR MESSAGES
+  elements.messages.innerHTML = '<div class="loading">Loading messages...</div>';
+  
+  // UPDATE USER STATE
+  currentUser.room = roomName;
+  elements.roomNameDisplay.textContent = roomName;
+  
+  // UPDATE ACTIVE ROOM UI
+  elements.chatrooms.forEach(room => {
+    room.classList.remove('active');
+    if (room.getAttribute('data-room') === roomName) {
+      room.classList.add('active');
     }
   });
-  elements.nameInput.addEventListener('keypress',(e)=>{if(e.key==='Enter')document.getElementById('submitName').click();});
   
-  document.getElementById('submitPassword').addEventListener('click',()=>{
-    const rn=elements.passwordModal.dataset.room,pw=elements.passwordModal.dataset.password,bg=elements.passwordModal.dataset.bg;
-    if(elements.passwordInput.value.trim().toUpperCase()===pw){
-      switchRoom(rn,bg);elements.passwordModal.style.display='none';elements.passwordInput.value='';
-    }else{alert('❌ Wrong password!');elements.passwordInput.focus();}
-  });
-  document.getElementById('cancelPassword').addEventListener('click',()=>{
-    elements.passwordModal.style.display='none';elements.passwordInput.value='';
-  });
-  elements.passwordInput.addEventListener('keypress',(e)=>{if(e.key==='Enter')document.getElementById('submitPassword').click();});
+  // CHANGE BACKGROUND
+  if (bgFile) {
+    document.getElementById('animeBg').style.backgroundImage = `url('${bgFile}')`;
+  }
   
-  elements.navItems.forEach(i=>{
-    i.addEventListener('click',()=>{
-      elements.navItems.forEach(n=>n.classList.remove('active'));
-      i.classList.add('active');
-      const tab=i.getAttribute('data-tab');
-      if(tab==='rooms')elements.sidebar.classList.add('show');
-      else if(tab==='online')elements.onlineSidebar.classList.add('show');
-      else if(tab==='theme'){
-        const bgs=['background.png','bg1.png','bg2.png','bg3.png','bg4.png','bg5.png'];
-        let ci=0,cur=document.getElementById('animeBg').style.backgroundImage;
-        for(let j=0;j<bgs.length;j++)if(cur.includes(bgs[j])){ci=j;break;}
-        const ni=(ci+1)%bgs.length;
-        document.getElementById('animeBg').style.backgroundImage=`url('${bgs[ni]}')`;
-        showSystemMessage(`Theme changed to Background ${ni+1}`);
+  // LOAD MESSAGES FOR NEW ROOM
+  loadMessages();
+  
+  // CLOSE SIDEBAR
+  elements.sidebar.classList.remove('show');
+  
+  // SHOW WELCOME MESSAGE
+  setTimeout(() => {
+    showSystemMessage(`Welcome to ${roomName}! Start chatting now.`);
+  }, 500);
+}
+
+// ========== FIXED USER SYSTEM ==========
+function initializeUser() {
+  // HAR USER KA UNIQUE ID BANAO
+  currentUser.id = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  
+  console.log('✅ User registered:', currentUser.name, 'ID:', currentUser.id);
+  
+  // UPDATE ONLINE STATUS
+  updateOnlineStatus();
+  
+  // LOAD MESSAGES
+  loadMessages();
+  
+  // FOCUS INPUT
+  setTimeout(() => {
+    elements.messageInput.focus();
+    showSystemMessage(`Welcome ${currentUser.name}! You joined ${currentUser.room}.`);
+  }, 500);
+}
+
+function updateOnlineStatus() {
+  if (!currentUser.id || !currentUser.name || !app.database) return;
+  
+  const userStatusRef = app.database.ref('status/' + currentUser.id);
+  
+  userStatusRef.set({
+    name: currentUser.name,
+    online: true,
+    lastSeen: Date.now(),
+    room: currentUser.room,
+    userId: currentUser.id
+  });
+  
+  userStatusRef.onDisconnect().update({
+    online: false,
+    lastSeen: Date.now()
+  });
+  
+  // LISTEN FOR OTHER USERS
+  app.database.ref('status').on('value', (snapshot) => {
+    const users = [];
+    let onlineCount = 0;
+    
+    if (snapshot.exists()) {
+      snapshot.forEach(child => {
+        const user = child.val();
+        if (user.online && user.userId !== currentUser.id) {
+          users.push(user);
+          onlineCount++;
+        }
+      });
+    }
+    
+    elements.onlineBadge.textContent = onlineCount;
+    elements.onlineCount.textContent = onlineCount + ' online';
+    
+    if (users.length === 0) {
+      elements.onlineUsersList.innerHTML = '<div class="loading">No other users online</div>';
+    } else {
+      let html = '';
+      users.forEach(user => {
+        html += `
+          <div class="online-user">
+            <div class="user-avatar">${user.name.charAt(0).toUpperCase()}</div>
+            <div>
+              <strong>${user.name}</strong><br>
+              <small>In: ${user.room || 'general'}</small>
+            </div>
+          </div>
+        `;
+      });
+      elements.onlineUsersList.innerHTML = html;
+    }
+  });
+}
+
+// ========== FIXED UI SYSTEMS ==========
+function initEmojiSystem() {
+  elements.emojiBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    elements.emojiPicker.style.display = elements.emojiPicker.style.display === 'grid' ? 'none' : 'grid';
+    elements.stickerMenu.style.display = 'none';
+  });
+  
+  elements.emojiPicker.querySelectorAll('.emoji-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      elements.messageInput.value += btn.getAttribute('data-emoji');
+      elements.messageInput.focus();
+      elements.emojiPicker.style.display = 'none';
+    });
+  });
+  
+  document.addEventListener('click', (e) => {
+    if (!elements.emojiPicker.contains(e.target) && e.target !== elements.emojiBtn) {
+      elements.emojiPicker.style.display = 'none';
+    }
+  });
+}
+
+function initSidebarSystem() {
+  let activeSidebar = null;
+  
+  function toggleSidebar(sidebar) {
+    if (activeSidebar === sidebar) {
+      sidebar.classList.remove('show');
+      activeSidebar = null;
+    } else {
+      if (activeSidebar) activeSidebar.classList.remove('show');
+      sidebar.classList.add('show');
+      activeSidebar = sidebar;
+    }
+    
+    elements.stickerMenu.style.display = 'none';
+    elements.emojiPicker.style.display = 'none';
+  }
+  
+  elements.menuBtn.addEventListener('click', () => toggleSidebar(elements.sidebar));
+  elements.onlineBtn.addEventListener('click', () => toggleSidebar(elements.onlineSidebar));
+  
+  document.addEventListener('click', (e) => {
+    if (activeSidebar && 
+        !activeSidebar.contains(e.target) && 
+        e.target !== elements.menuBtn && 
+        e.target !== elements.onlineBtn) {
+      activeSidebar.classList.remove('show');
+      activeSidebar = null;
+    }
+  });
+}
+
+function initSecretPanel() {
+  elements.secretBtn.addEventListener('click', () => {
+    const isVisible = elements.secretContainer.style.display === 'block';
+    elements.secretContainer.style.display = isVisible ? 'none' : 'block';
+    
+    if (!isVisible) {
+      document.getElementById('secretPass1').textContent = CONFIG.SECRET_PASSWORDS.Chatroom1;
+      document.getElementById('secretPass2').textContent = CONFIG.SECRET_PASSWORDS.Chatroom2;
+      document.getElementById('secretPass3').textContent = CONFIG.SECRET_PASSWORDS.Chatroom3;
+      document.getElementById('secretPass4').textContent = CONFIG.SECRET_PASSWORDS.Chatroom4;
+      document.getElementById('secretPass5').textContent = CONFIG.SECRET_PASSWORDS.Chatroom5;
+    }
+  });
+  
+  document.addEventListener('click', (e) => {
+    if (!elements.secretContainer.contains(e.target) && e.target !== elements.secretBtn) {
+      elements.secretContainer.style.display = 'none';
+    }
+  });
+}
+
+// ========== FIXED EVENT LISTENERS ==========
+function initEventListeners() {
+  // NAME SUBMISSION - HAR BAAR NAME POOCHEGA
+  document.getElementById('submitName').addEventListener('click', () => {
+    currentUser.name = elements.nameInput.value.trim();
+    if (!currentUser.name) {
+      currentUser.name = 'AnimeFan' + Math.floor(Math.random() * 1000);
+    }
+    
+    if (currentUser.name) {
+      localStorage.setItem('animechat_username', currentUser.name);
+      elements.nameModal.style.display = 'none';
+      document.title = currentUser.name + ' - AnimeChat Pro';
+      
+      // FIREBASE INITIALIZE KARO PHIR USER
+      initializeFirebase().then(firebaseLoaded => {
+        if (firebaseLoaded) {
+          initializeUser();
+        } else {
+          // OFFLINE MODE
+          currentUser.id = 'offline_' + Date.now();
+          showSystemMessage(`Welcome ${currentUser.name}! (Offline Mode)`);
+          loadMessages();
+        }
+      });
+    }
+  });
+  
+  elements.nameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('submitName').click();
+    }
+  });
+  
+  // PASSWORD SUBMISSION
+  document.getElementById('submitPassword').addEventListener('click', () => {
+    const roomName = elements.passwordModal.dataset.room;
+    const requiredPassword = elements.passwordModal.dataset.password;
+    const bgFile = elements.passwordModal.dataset.bg;
+    const enteredPassword = elements.passwordInput.value.trim().toUpperCase();
+    
+    if (enteredPassword === requiredPassword) {
+      switchRoom(roomName, bgFile);
+      elements.passwordModal.style.display = 'none';
+      elements.passwordInput.value = '';
+    } else {
+      alert('❌ Wrong password! Try again.');
+      elements.passwordInput.focus();
+    }
+  });
+  
+  document.getElementById('cancelPassword').addEventListener('click', () => {
+    elements.passwordModal.style.display = 'none';
+    elements.passwordInput.value = '';
+  });
+  
+  elements.passwordInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('submitPassword').click();
+    }
+  });
+  
+  // NAVIGATION
+  elements.navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      elements.navItems.forEach(nav => nav.classList.remove('active'));
+      item.classList.add('active');
+      
+      const tab = item.getAttribute('data-tab');
+      if (tab === 'rooms') {
+        elements.sidebar.classList.add('show');
+      } else if (tab === 'online') {
+        elements.onlineSidebar.classList.add('show');
+      } else if (tab === 'theme') {
+        const bgFiles = ['background.png', 'bg1.png', 'bg2.png', 'bg3.png', 'bg4.png', 'bg5.png'];
+        const currentBg = document.getElementById('animeBg').style.backgroundImage;
+        let currentIndex = 0;
+        
+        for (let i = 0; i < bgFiles.length; i++) {
+          if (currentBg.includes(bgFiles[i])) {
+            currentIndex = i;
+            break;
+          }
+        }
+        
+        const nextIndex = (currentIndex + 1) % bgFiles.length;
+        document.getElementById('animeBg').style.backgroundImage = `url('${bgFiles[nextIndex]}')`;
+        showSystemMessage(`Theme changed to Background ${nextIndex + 1}`);
       }
     });
   });
   
-  function adjustHeight(){
-    const h=document.querySelector('.chat-header').offsetHeight;
-    const i=document.querySelector('.input-area').offsetHeight;
-    const n=document.querySelector('.nav-bar').offsetHeight;
-    elements.chatContainer.style.height=`calc(100vh - ${h+i+n}px)`;
+  // CHAT CONTAINER HEIGHT
+  function adjustChatHeight() {
+    const headerHeight = document.querySelector('.chat-header').offsetHeight;
+    const inputHeight = document.querySelector('.input-area').offsetHeight;
+    const navHeight = document.querySelector('.nav-bar').offsetHeight;
+    
+    elements.chatContainer.style.height = `calc(100vh - ${headerHeight + inputHeight + navHeight}px)`;
   }
-  adjustHeight();window.addEventListener('resize',adjustHeight);
-}
-
-// ========== SIMPLE USER INIT ==========
-function initializeUser(){
-  if(app.auth){
-    app.auth.signInAnonymously().then(u=>{
-      currentUser.id=u.user.uid;
-      console.log('✅ User:',currentUser.name);
-      loadMessages();
-      setTimeout(()=>{
-        elements.messageInput.focus();
-        showSystemMessage(`Welcome ${currentUser.name}! Joined ${currentUser.room}`);
-      },500);
-    }).catch(e=>{console.warn('Sign in failed:',e);loadMessages();});
-  }else{loadMessages();}
-}
-
-// ========== APP START ==========
-async function initializeApp(){
-  console.log('🚀 AnimeChat Pro LOADED');
-  initStickerSystem();initEmojiSystem();initSidebarSystem();
-  initSecretPanel();initRoomSystem();initMessageSystem();initEventListeners();
   
-  if(currentUser.name){
-    console.log('✅ User found:',currentUser.name);
-    document.title=currentUser.name+' - AnimeChat Pro';
-    try{
-      await initializeFirebase();
-      initializeUser();
-    }catch(e){console.warn('Init failed:',e);loadMessages();}
-  }else{
-    elements.nameModal.style.display='flex';
-    elements.nameInput.focus();
-    elements.nameInput.value='AnimeFan'+Math.floor(Math.random()*1000);
-  }
+  adjustChatHeight();
+  window.addEventListener('resize', adjustChatHeight);
 }
 
-document.addEventListener('DOMContentLoaded',initializeApp);
-window.hideSecretPanel=()=>elements.secretContainer.style.display='none';
+// ========== FIXED APP INITIALIZATION ==========
+async function initializeApp() {
+  console.log('🚀 AnimeChat Pro LOADED');
+  
+  // INITIALIZE UI SYSTEMS
+  initStickerSystem();
+  initEmojiSystem();
+  initSidebarSystem();
+  initSecretPanel();
+  initRoomSystem();
+  initMessageSystem();
+  initEventListeners();
+  
+  // HAR BAAR NAME MODAL SHOW KARO (SAVED USER BHI)
+  elements.nameModal.style.display = 'flex';
+  elements.nameInput.focus();
+  
+  // RANDOM DEFAULT NAME
+  elements.nameInput.value = 'AnimeFan' + Math.floor(Math.random() * 1000);
+  
+  console.log('🆕 Please enter your name to start chatting');
+}
+
+// ========== START APP ==========
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+window.hideSecretPanel = () => {
+  elements.secretContainer.style.display = 'none';
+};
 </script>
