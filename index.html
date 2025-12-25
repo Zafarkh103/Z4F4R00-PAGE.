@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discipline & Enjoy Tracker</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 380px; border-top: 5px solid #3b82f6; }
+        
+        /* Status Messages */
+        .status-box { padding: 15px; border-radius: 12px; font-weight: bold; margin-bottom: 20px; font-size: 14px; text-transform: uppercase; }
+        .rest-mode { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+        .enjoy-mode { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
+
+        .day-display { font-size: 22px; color: #fbbf24; font-weight: bold; margin-bottom: 5px; }
+        .date-display { font-size: 14px; color: #94a3b8; margin-bottom: 20px; }
+        
+        .mission-box { background: #334155; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #475569; }
+        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .active { background: #3b82f6; color: white; }
+        .locked { background: #4b5563 !important; color: #9ca3af !important; cursor: not-allowed; }
+        
+        .footer-note { font-size: 11px; color: #64748b; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <!-- Dynamic Status Message -->
+    <div id="status-banner" class="status-box">Checking...</div>
+
+    <div id="day-name" class="day-display">Day Name</div>
+    <div id="full-date" class="date-display">Date Display</div>
+
+    <!-- Wednesday Task -->
+    <div class="mission-box">
+        <span style="font-size: 13px; color: #94a3b8;">MISSION 1</span>
+        <div style="font-weight: bold; color: #fff;">WEDNESDAY</div>
+        <button id="btn-wed" class="btn active" onclick="markTask('wed')">COMPLETE SESSION</button>
+    </div>
+
+    <!-- Sunday Task -->
+    <div class="mission-box">
+        <span style="font-size: 13px; color: #94a3b8;">MISSION 2</span>
+        <div style="font-weight: bold; color: #fff;">SUNDAY</div>
+        <button id="btn-sun" class="btn active" onclick="markTask('sun')">COMPLETE SESSION</button>
+    </div>
+
+    <div class="footer-note">
+        Target: 104 Missions Per Year (2025)<br>
+        Status: Self-Control Mode Active
+    </div>
+</div>
+
+<script>
+    function updateTracker() {
+        const now = new Date();
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const currentDay = days[now.getDay()];
+        
+        document.getElementById('day-name').innerText = currentDay;
+        document.getElementById('full-date').innerText = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+        // Status Banner Logic
+        const banner = document.getElementById('status-banner');
+        if (currentDay === 'Wednesday' || currentDay === 'Sunday') {
+            banner.innerText = "😍 TODAY IS A ENJOY DAY FOR THESE TASKS";
+            banner.className = "status-box enjoy-mode";
+        } else {
+            banner.innerText = "⚠️ TODAY IS A REST DAY FOR THESE TASKS";
+            banner.className = "status-box rest-mode";
+        }
+
+        // Weekly Reset (Every Monday)
+        const weekID = getWeekNumber(now);
+        if (localStorage.getItem('saved_week') != weekID) {
+            localStorage.setItem('saved_week', weekID);
+            localStorage.setItem('wed_done', 'false');
+            localStorage.setItem('sun_done', 'false');
+        }
+
+        // Button Persistence
+        checkButton('wed', 'btn-wed', 'WEDNESDAY DONE ✅');
+        checkButton('sun', 'btn-sun', 'SUNDAY DONE ✅');
+    }
+
+    function checkButton(key, id, text) {
+        if (localStorage.getItem(key + '_done') === 'true') {
+            const b = document.getElementById(id);
+            b.disabled = true;
+            b.classList.add('locked');
+            b.innerText = text;
+        }
+    }
+
+    function markTask(day) {
+        if (confirm("Are you sure? Only 2 sessions per week allowed!")) {
+            localStorage.setItem(day + '_done', 'true');
+            updateTracker();
+        }
+    }
+
+    function getWeekNumber(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    }
+
+    updateTracker();
+    setInterval(updateTracker, 30000); // Sync every 30 seconds
+</script>
+
+</body>
+</html>
